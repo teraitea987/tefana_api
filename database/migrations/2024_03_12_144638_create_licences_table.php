@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('adress');
             $table->string('phone_number');
             $table->date('birthday_date');
-            $table->string('category_license');
+            $table->integer('category_license');
             $table->string('country');
             $table->unsignedBigInteger('created_by');
             $table->foreign('created_by')->references('id')->on('users');

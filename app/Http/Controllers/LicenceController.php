@@ -16,11 +16,9 @@ class LicenceController extends Controller
             'adress' => 'required|string|max:250',
             'phone_number' => 'required|string|max:250',
             'birthday_date' => 'required|date',
-            'category_license' => 'required|string|max:250',
+            'category_license' => 'required|int',
             'country' => 'required|string|max:250',
-            'created_by' => 'required|integer',
         ]);
-
         if($validate->fails()){  
             return response()->json([
                 'status' => 'failed',
@@ -28,6 +26,8 @@ class LicenceController extends Controller
                 'data' => $validate->errors(),
             ], 403);    
         }
+
+        $request->merge(['created_by' => auth()->user()->id]);
 
         $licence = Licence::create($request->all());
 

@@ -18,3 +18,4 @@ Route::get('/', function () {
 });
 
 Route::get('/licence/{id}' , 'App\Http\Controllers\LicenceController@show_pdf');
+Route::get('pdf', 'App\Http\Controllers\PdfController@index');

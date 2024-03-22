@@ -37,8 +37,11 @@ class LicenceController extends Controller
             'adress' => 'required|string|max:250',
             'phone_number' => 'required|string|max:250',
             'birthday_date' => 'required|date',
-            'category_license' => 'required|int',
+            'licence_category_1' => 'required|int',
             'country' => 'required|string|max:250',
+            'club_name' => 'required|string|max:250',
+            'licence_number_1' => 'required|int',
+            'licence_season_1' => 'required|date',
         ]);
         if($validate->fails()){  
             return response()->json([
@@ -128,4 +131,8 @@ class LicenceController extends Controller
         return response()->json($response, 200);
     }
     
+    public function show_pdf($id) {
+        $licence = Licence::find($id);
+        return view('licences/licence_pdf', ['licence' => $licence]);
+    }
 }

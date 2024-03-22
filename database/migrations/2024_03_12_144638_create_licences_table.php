@@ -17,12 +17,23 @@ return new class extends Migration
             $table->string('first_name');
             $table->string('last_name');
             $table->string('adress');
-            $table->string('phone_number');
+            $table->string('phone_number')->nullable();
+            $table->string('club_name')->nullable();
             $table->date('birthday_date');
-            $table->integer('category_license');
+            $table->string('picture_url')->nullable();
+            $table->integer('licence_category_1');
+            $table->integer('licence_category_2')->nullable();
+            $table->integer('licence_category_3')->nullable();
+            $table->date('licence_season_1');
+            $table->date('licence_season_2')->nullable();
+            $table->date('licence_season_3')->nullable();
+            $table->integer('licence_number_1');
+            $table->integer('licence_number_2')->nullable();
+            $table->integer('licence_number_3')->nullable();
             $table->string('country');
             $table->unsignedBigInteger('created_by');
             $table->foreign('created_by')->references('id')->on('users');
+
             $table->timestamps();
         });
     }

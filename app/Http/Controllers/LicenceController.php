@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Licence;
 use Validator;
 
+use Illuminate\Support\Facades\Storage;
 class LicenceController extends Controller
 {
     public function index()
@@ -19,7 +20,11 @@ class LicenceController extends Controller
                 'data' => null,
             ], 404);
         }
-
+        dd($licences);
+        $images = Storage::get($licences->picture_url);
+        $licences->each(function ($licence) use ($images) {
+            $licence->image = Storage::get($images[array_rand($images)]);
+        });
         $response = [
             'status' => 'success',
             'message' => 'Licences retrieved successfully.',

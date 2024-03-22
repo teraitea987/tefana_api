@@ -34,6 +34,7 @@ Route::controller(ProductController::class)->group(function() {
 // Protected routes
 Route::middleware('auth:sanctum')->group( function () {
     Route::post('/logout', [LoginRegisterController::class, 'logout']);
+    Route::get('/user', [LoginRegisterController::class, 'me']);
 
     Route::controller(ProductController::class)->group(function() {
         Route::post('/products', 'store');
@@ -46,7 +47,11 @@ Route::middleware('auth:sanctum')->group( function () {
     });
 
     Route::controller(LicenceController::class)->group(function() {
+        Route::get('/licences', 'index');
         Route::post('/licences', 'store');
+        Route::get('/licences/{id}', 'show');
+        Route::post('/licences/{id}', 'update');
+        Route::delete('/licences/{id}', 'destroy');
     });
     
 });

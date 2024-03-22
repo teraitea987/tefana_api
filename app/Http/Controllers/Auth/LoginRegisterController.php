@@ -110,4 +110,25 @@ class LoginRegisterController extends Controller
             'message' => 'User is logged out successfully'
             ], 200);
     }    
+
+    /**
+     * Get the authenticated user.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function me(Request $request)
+    {
+        $user = $request->user();
+
+        $data['user'] = $user;
+
+        $response = [
+            'status' => 'success',
+            'message' => 'User details retrieved successfully.',
+            'data' => $data,
+        ];
+
+        return response()->json($response, 200);
+    }
 }

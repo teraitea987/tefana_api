@@ -8,6 +8,27 @@ use Validator;
 
 class LicenceController extends Controller
 {
+    public function index()
+    {
+        $licences = Licence::all();
+        
+        if ($licences->isEmpty()) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Licences not found.',
+                'data' => null,
+            ], 404);
+        }
+
+        $response = [
+            'status' => 'success',
+            'message' => 'Licences retrieved successfully.',
+            'data' => $licences,
+        ];
+
+        return response()->json($response, 200);
+    }
+
     public function store(Request $request)
     {
         $validate = Validator::make($request->all(), [
@@ -39,4 +60,72 @@ class LicenceController extends Controller
 
         return response()->json($response, 200);
     }
+    
+    public function update(Request $request, $id) 
+    {
+        $licence = Licence::find($id);
+
+        if (is_null($licence)) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Licence not found.',
+                'data' => null,
+            ], 404);
+        }
+
+        $licence->update($request->all());
+
+        $response = [
+            'status' => 'success',
+            'message' => 'Licence updated successfully.',
+            'data' => $licence,
+        ];
+
+        return response()->json($response, 200);
+    }
+
+    public function destroy($id)
+    {
+        $licence = Licence::find($id);
+
+        if (is_null($licence)) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Licence not found.',
+                'data' => null,
+            ], 404);
+        }
+
+        $licence->delete();
+
+        $response = [
+            'status' => 'success',
+            'message' => 'Licence deleted successfully.',
+            'data' => $licence,
+        ];
+
+        return response()->json($response, 200);
+    }   
+
+    public function show($id)
+    {
+        $licence = Licence::find($id);
+
+        if (is_null($licence)) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Licence not found.',
+                'data' => null,
+            ], 404);
+        }
+
+        $response = [
+            'status' => 'success',
+            'message' => 'Licence retrieved successfully.',
+            'data' => $licence,
+        ];
+
+        return response()->json($response, 200);
+    }
+    
 }

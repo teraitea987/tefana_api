@@ -13,7 +13,7 @@ class FileUploadRequest extends FormRequest
     public function rules()
     {
         return [
-            'file' => 'required|mimes:jpeg,png|max:2048',
+            'picture_url' => 'required|mimes:jpeg,png|max:2048',
         ];
     }
 }

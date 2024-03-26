@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Models\Licence;
 use Validator;
 use App\Services\FileUploadService;
-use App\Http\Requests\FileUploadRequest;
 use Illuminate\Support\Facades\Storage;
 class LicenceController extends Controller
 {
@@ -45,7 +44,6 @@ class LicenceController extends Controller
             'club_name' => 'required|string|max:250',
             'licence_number_1' => 'required|int',
             'licence_season_1' => 'required|date',
-            'picture_url' =>  'required|mimes:jpeg,png|max:2048',
         ]);
         if($validate->fails()){  
             return response()->json([
@@ -55,14 +53,22 @@ class LicenceController extends Controller
             ], 403);    
         }
 
-        if ($request->hasFile('picture_url')) {
-            $file = $request->file('picture_url');
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            
 
-            // The request has already been validated via FileUploadRequest
-
+            $lid = rand(1000, 9999);
+            $file_name = $file->getClientOriginalName();
+            $file_ext = $file->getClientOriginalExtension();
+            $fileInfo = pathinfo($file_name);
+            $filename = $fileInfo['filename'];
+            $newname = $filename . $lid . "." . $file_ext;
+            $destinationPath = 'images/uploads/';
+            $file->move($destinationPath, $newname);
+            
             // Use the FileUploadService to upload the file
-            $filePath = $fileUploadService->uploadFile($file);
-            $request->merge(['picture_url' => strval($filePath)]);
+            $picture_url = $destinationPath.$newname;
+            $request->merge(['picture_url' => $picture_url]);
 
         } else {
             return response()->json([
@@ -74,6 +80,7 @@ class LicenceController extends Controller
         
         $request->merge(['created_by' => auth()->user()->id]);
         $licence = Licence::create($request->all());
+        dd($licence);
         $response = [
             'status' => 'success',
             'message' => 'Licence is added successfully.',

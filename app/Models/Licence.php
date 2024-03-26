@@ -29,6 +29,7 @@ class Licence extends Model
         'club_name',
         'country',
         'created_by',
+        'picture_url'
     ];
 
     protected $hidden = [

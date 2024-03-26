@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Licence;
 use Validator;
-
+use App\Services\FileUploadService;
+use App\Http\Requests\FileUploadRequest;
 use Illuminate\Support\Facades\Storage;
 class LicenceController extends Controller
 {
@@ -29,8 +30,10 @@ class LicenceController extends Controller
         return response()->json($response, 200);
     }
 
-    public function store(Request $request)
+    public function store(Request $request, FileUploadService $fileUploadService)
     {
+        $request->merge(['birthday_date' => date('Y-m-d', strtotime($request->birthday_date))]);
+        $request->merge(['licence_season_1' => date('Y-m-d', strtotime($request->licence_season_1. "-01-01"))]);
         $validate = Validator::make($request->all(), [
             'first_name' => 'required|string|max:250',
             'last_name' => 'required|string|max:250',
@@ -42,7 +45,7 @@ class LicenceController extends Controller
             'club_name' => 'required|string|max:250',
             'licence_number_1' => 'required|int',
             'licence_season_1' => 'required|date',
-            // 'picture_url' => 'mimes:jpeg|png|jpg|gif|svg',
+            'picture_url' =>  'required|mimes:jpeg,png|max:2048',
         ]);
         if($validate->fails()){  
             return response()->json([
@@ -52,16 +55,25 @@ class LicenceController extends Controller
             ], 403);    
         }
 
-        $request->merge(['created_by' => auth()->user()->id]);
+        if ($request->hasFile('picture_url')) {
+            $file = $request->file('picture_url');
 
-        // if($request->hasFile('image')){
-        //     $file = $request->file('image');
-        //   $filename = $file->getClientOriginalName();
-        //   $file->storeAs('public/images/uploads',$filename);
-        // }
+            // The request has already been validated via FileUploadRequest
+
+            // Use the FileUploadService to upload the file
+            $filePath = $fileUploadService->uploadFile($file);
+            $request->merge(['picture_url' => strval($filePath)]);
+
+        } else {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Picture is required.',
+                'data' => null,
+            ], 403);
+        }
         
+        $request->merge(['created_by' => auth()->user()->id]);
         $licence = Licence::create($request->all());
-
         $response = [
             'status' => 'success',
             'message' => 'Licence is added successfully.',

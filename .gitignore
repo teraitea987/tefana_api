@@ -1,0 +1,25 @@
+# Laravel specific files/directories
+.env
+vendor/
+node_modules/
+public/storage
+
+# Laravel generated files/directories
+/storage/*.key
+/storage/*.pem
+/storage/*.crt
+/storage/*.csr
+/bootstrap/cache/*.php
+/public/hot
+/public/storage
+/public/vendor
+
+# IDE specific files/directories
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# OS generated files/directories
+.DS_Store
+Thumbs.db

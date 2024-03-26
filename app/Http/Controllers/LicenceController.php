@@ -20,11 +20,6 @@ class LicenceController extends Controller
                 'data' => null,
             ], 404);
         }
-        dd($licences);
-        $images = Storage::get($licences->picture_url);
-        $licences->each(function ($licence) use ($images) {
-            $licence->image = Storage::get($images[array_rand($images)]);
-        });
         $response = [
             'status' => 'success',
             'message' => 'Licences retrieved successfully.',
@@ -47,6 +42,7 @@ class LicenceController extends Controller
             'club_name' => 'required|string|max:250',
             'licence_number_1' => 'required|int',
             'licence_season_1' => 'required|date',
+            // 'picture_url' => 'mimes:jpeg|png|jpg|gif|svg',
         ]);
         if($validate->fails()){  
             return response()->json([
@@ -58,6 +54,12 @@ class LicenceController extends Controller
 
         $request->merge(['created_by' => auth()->user()->id]);
 
+        // if($request->hasFile('image')){
+        //     $file = $request->file('image');
+        //   $filename = $file->getClientOriginalName();
+        //   $file->storeAs('public/images/uploads',$filename);
+        // }
+        
         $licence = Licence::create($request->all());
 
         $response = [
